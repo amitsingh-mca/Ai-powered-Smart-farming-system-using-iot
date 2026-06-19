@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGRO-AI // Advanced Autonomous Command Center</title>
+    <style>
+        /* === Advanced Glassmorphism & Cyber Tech Theme === */
+        :root {
+            --bg-deep: #0b0f19;          /* Matrix Deep Space Void */
+            --panel-bg: #131c2e;        /* Dark Slate Glass Panel */
+            --border-glow: #1e293b;     /* High Tech Border Line */
+            --cyber-green: #00f2fe;     /* Neon Cyan / Active Status */
+            --matrix-green: #10b981;    /* System Healthy / Safe Zone */
+            --warning-amber: #f59e0b;   /* Standby Alert */
+            --critical-red: #ef4444;    /* Critical Irrigation Alert */
+            --text-main: #f8fafc;       /* Ultra White Text */
+            --text-side: #94a3b8;       /* Subtle Tech Blue Text */
+        }
+        /* Purane body tag ko isse replace karein */
+body {
+    background-image: linear-gradient(rgba(31, 220, 43, 0.2), rgba(87, 81, 81, 0.2)), url('farmAI.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: var(--text-main);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Sidebar ka background thoda translucent (glassy) karne ke liye ise update karein */
+.sidebar {
+    width: 280px;
+    background: linear-gradient(180deg, rgba(45, 185, 232, 0.9) 0%, rgba(31, 214, 7, 0.4) 100%);
+    border-right: 2px solid #1e293b;
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    backdrop-filter: blur(10px); /* Ise add karne se background image peek karegi */
+}
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Consolas', 'Fira Code', monospace, sans-serif; }
+        body { background-color: var(--bg-deep); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* === Left Sidebar Panel === */
+        .sidebar {
+            width: 280px; background: linear-gradient(180deg, #855252 0%, #5a6d5d 100%);
+            border-right: 2px solid #4fe04f; padding: 2.5rem 1.5rem; display: flex; flex-direction: column; justify-content: space-between;
+        }
+
+        .brand-header { margin-bottom: 2.5rem; }
+        .brand-title { font-size: 1.6rem; font-weight: 800; letter-spacing: 0.15em; color: #f6faf7; text-shadow: 0 0 10px rgba(60, 12, 94, 0.3); }
+        .brand-subtitle { font-size: 0.75rem; color: var(--cyber-green); text-transform: uppercase; margin-top: 5px; letter-spacing: 0.05em; }
+
+        .side-menu { list-style: none; }
+        .menu-item {
+            padding: 12px 16px; margin-bottom: 10px; border-radius: 6px; cursor: pointer;
+            color: var(--text-side); font-size: 0.9rem; transition: all 0.3s ease;
+            border-left: 3px solid transparent; display: flex; align-items: center; gap: 12px;
+        }
+        .menu-item:hover, .menu-item.active {
+            background: rgba(2, 132, 199, 0.1); color: var(--text-main);
+            border-left-color: var(--cyber-green); text-shadow: 0 0 8px rgba(255,255,255,0.2);
+        }
+
+        /* Simulation Switch Area */
+        .sim-control-box {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--border-glow); padding: 1.2rem; border-radius: 8px;
+        }
+        .sim-label { font-size: 0.75rem; color: var(--text-side); text-transform: uppercase; margin-bottom: 8px; }
+        .sim-toggle-btn {
+            width: 100%; padding: 10px; background: #1e293b; border: 1px solid var(--cyber-green);
+            color: var(--cyber-green); font-weight: bold; cursor: pointer; border-radius: 4px; font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .sim-toggle-btn.real-mode { border-color: var(--matrix-green); color: var(--matrix-green); }
+
+        /* === Right Content Layout === */
+        .content-frame { flex-grow: 1; display: flex; flex-direction: column; }
+        
+        .main-header {
+            padding: 1.5rem 2.5rem; background: rgba(100, 107, 95, 0.8);
+            border-bottom: 1px solid var(--border-glow); display: flex; justify-content: space-between; align-items: center;
+        }
+        .header-title h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+        .header-title p { font-size: 0.8rem; color: var(--text-side); margin-top: 3px; }
+        
+        /* App View Grid Controllers */
+        .app-view { flex-grow: 1; padding: 2rem 2.5rem; overflow-y: auto; display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
+
+        /* === Metric Displays === */
+        .metrics-column { grid-column: span 4; display: flex; flex-direction: column; gap: 1.2rem; }
+        
+        .tech-card {
+            background: var(--panel-bg); border: 1px solid var(--border-glow); border-radius: 10px;
+            padding: 1.2rem 1.5rem; position: relative; overflow: hidden;
+        }
+        .tech-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--border-glow); }
+        .card-moisture::before { background: var(--cyber-green); }
+        .card-temp::before { background: var(--warning-amber); }
+        .card-humidity::before { background: #a855f7; }
+
+        .tech-card h3 { font-size: 0.75rem; color: var(--text-side); text-transform: uppercase; letter-spacing: 0.05em; }
+        .tech-card .val-box { display: flex; align-items: baseline; gap: 4px; margin-top: 8px; }
+        .tech-card .big-val { font-size: 2.2rem; font-weight: 700; color: #fff; }
+        .tech-card .unit { font-size: 1rem; color: var(--text-side); }
+        .tech-card .status-bar { width: 100%; height: 4px; background: #1e293b; border-radius: 2px; margin-top: 10px; overflow: hidden; }
+        .tech-card .status-fill { height: 100%; width: 0%; transition: width 0.5s ease; }
+
+        /* Pump Panel */
+        .pump-panel { background: linear-gradient(135deg, #131c2e 0%, #0f172a 100%); border-left: 4px solid var(--text-side); }
+        .pump-panel.active { border-left-color: var(--matrix-green); background: linear-gradient(135deg, #0c211a 0%, #131c2e 100%); }
+        .pump-status-label { font-size: 1.5rem; font-weight: bold; margin-top: 5px; }
+
+        /* === Upgraded Topology View (Digital Twin Grid Map) === */
+        .twin-column { grid-column: span 8; background: var(--panel-bg); border: 1px solid var(--border-glow); border-radius: 10px; padding: 1.5rem; display: flex; flex-direction: column; }
+        .twin-header { display: flex; justify-content: space-between; margin-bottom: 1rem; font-size: 0.85rem; }
+        
+        .field-matrix-grid {
+            flex-grow: 1; background: #090d16; border-radius: 8px; border: 1px dashed #334155;
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; padding: 15px; position: relative;
+        }
+
+        /* Multi-Zone Farming Nodes */
+        .field-node {
+            background: rgba(30, 41, 59, 0.3); border: 1px solid rgba(255,255,255,0.03); border-radius: 4px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; font-size: 0.65rem; color: #475569; transition: all 0.5s;
+        }
+        .field-node.active-moist { background: rgba(16, 185, 129, 0.15); border-color: var(--matrix-green); color: var(--matrix-green); animation: pulse-green 2s infinite; }
+        .field-node.active-dry { background: rgba(239, 68, 68, 0.1); border-color: var(--critical-red); color: var(--critical-red); }
+
+        @keyframes pulse-green { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.2); } 70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+
+        /* Micro-Water Tank UI Component */
+        .tank-wrapper { position: absolute; right: 20px; bottom: 20px; width: 60px; height: 140px; background: #131c2e; border: 2px solid #334155; border-radius: 6px; overflow: hidden; }
+        .tank-fill { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(0deg, #0284c7 0%, #0ea5e9 100%); transition: height 0.5s ease; border-top: 2px solid #fff; }
+        .tank-txt { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.75rem; font-weight: bold; color: #fff; z-index: 2; text-shadow: 0 1px 3px #000; }
+
+        /* === Data Logging Table System === */
+        .table-panel { grid-column: span 12; background: var(--panel-bg); border: 1px solid var(--border-glow); border-radius: 10px; padding: 1.5rem; }
+        .table-box { height: 260px; overflow-y: auto; margin-top: 1rem; border: 1px solid #1e293b; border-radius: 6px; }
+        .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
+        .data-table th { background: #0f172a; color: var(--text-side); padding: 12px; position: sticky; top: 0; border-bottom: 2px solid var(--border-glow); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+        .data-table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.02); color: #cbd5e1; }
+        .data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+        .badge { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; }
+        .badge-on { background: rgba(16, 185, 129, 0.15); color: var(--matrix-green); }
+        .badge-off { background: rgba(87, 22, 185, 0.1); color: var(--text-side); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div>
+            <div class="brand-header">
+                <div class="brand-title">AGRO-CORE</div>
+                <div class="brand-subtitle">AI Twin Pipeline Framework</div>
+            </div>
+            <ul class="side-menu">
+                <li class="menu-item active" id="tab-dash">⚡ Matrix Dashboard</li>
+                <li class="menu-item" id="tab-logs">📊 SQLite Data Matrix</li>
+                <li class="menu-item" id="tab-ai">🤖 AI Hyper-Weights</li>
+            </ul>
+        </div>
+
+        <div class="sim-control-box">
+            <div class="sim-label">Hardware Logic Router</div>
+            <button class="sim-toggle-btn" id="mode-btn" onclick="toggleSystemMode()">Simulation Active</button>
+        </div>
+    </aside>
+
+    <section class="content-frame">
+        <header class="main-header">
+            <div class="header-title">
+                <h1 id="title-txt">Autonomous Core Portal</h1>
+                <p id="hint-txt">Real-time deep learning diagnostic twin for automated crop tracking</p>
+            </div>
+        </header>
+
+        <div class="app-view">
+            
+            <div id="section-dashboard" style="display: contents;">
+                <div class="metrics-column">
+                    <div class="tech-card card-moisture">
+                        <h3>Soil Moisture Profile</h3>
+                        <div class="val-box"><span class="big-val" id="m-val">--</span><span class="unit">%</span></div>
+                        <div class="status-bar"><div class="status-fill" id="m-bar" style="background: var(--cyber-green);"></div></div>
+                    </div>
+                    <div class="tech-card card-temp">
+                        <h3>Atmospheric Thermal Log</h3>
+                        <div class="val-box"><span class="big-val" id="t-val">--</span><span class="unit">°C</span></div>
+                        <div class="status-bar"><div class="status-fill" id="t-bar" style="background: var(--warning-amber);"></div></div>
+                    </div>
+                    <div class="tech-card card-humidity">
+                        <h3>Vapor Pressure Humidity</h3>
+                        <div class="val-box"><span class="big-val" id="h-val">--</span><span class="unit">%</span></div>
+                        <div class="status-bar"><div class="status-fill" id="h-bar" style="background: #a855f7;"></div></div>
+                    </div>
+                    <div class="tech-card pump-panel" id="pump-card">
+                        <h3>Relay Node Actuator</h3>
+                        <div class="pump-status-label" id="pump-val">SYSTEM IDLE</div>
+                        <p style="font-size: 0.75rem; color: var(--text-side); margin-top: 5px;" id="ai-reason">Initializing telemetry loop pipeline...</p>
+                    </div>
+                </div>
+
+                <div class="twin-column">
+                    <div class="twin-header">
+                        <span>Topology Spatial Twin Matrix</span>
+                        <span style="color: var(--cyber-green);">LIVE COMPILATION SECURE</span>
+                    </div>
+                    <div class="field-matrix-grid" id="matrix-grid">
+                        </div>
+                </div>
+            </div>
+
+            <div class="table-panel" id="section-logs">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="font-size: 1.1rem; letter-spacing: 0.05em; color: var(--text-side);">SQLite Database Log Registers</h2>
+                    <span style="font-size: 0.75rem; color: var(--matrix-green);">Pipeline Synchronized</span>
+                </div>
+                <div class="table-box">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>Timestamp</th>
+                                <th>Thermal (°C)</th>
+                                <th>Humidity (%)</th>
+                                <th>Soil Moisture (%)</th>
+                                <th>Actuator Gate</th>
+                                <th>AI Inference Reasoning Strategy</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <tr><td colspan="7" style="text-align: center; color: var(--text-side); padding: 30px;">Awaiting background thread synchronization...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="table-panel" id="section-ai" style="display: none;">
+                <h2 style="font-size: 1.1rem; margin-bottom: 1.5rem; color: var(--text-side);">AI Core Weights & Decision Hyperparameters</h2>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="tech-card" style="background: rgba(0,0,0,0.2);">
+                        <h3 style="color: var(--cyber-green);">Scikit-Learn Predictive Boundaries</h3>
+                        <p style="font-size: 0.85rem; margin-top: 10px; color: #cbd5e1;">Moisture Target Threshold: <span style="color:var(--cyber-green)">30.0%</span></p>
+                        <p style="font-size: 0.85rem; margin-top: 5px; color: #cbd5e1;">Atmospheric Rain Dampener: <span style="color:#a855f7">85.0%</span></p>
+                        <p style="font-size: 0.85rem; margin-top: 5px; color: #cbd5e1;">Thermal Heat Wave Critical: <span style="color:var(--critical-red)">38.0°C</span></p>
+                    </div>
+                    <div class="tech-card" style="background: rgba(0,0,0,0.2);">
+                        <h3>Model Architecture Type</h3>
+                        <p style="font-size: 0.85rem; margin-top: 10px; color: var(--matrix-green);">Current Layer: Multivariable Decision Logic Framework</p>
+                        <p style="font-size: 0.75rem; margin-top: 10px; color: var(--text-side);">The framework handles live pipeline requests dynamically over the REST API port and commits variables to SQLite asynchronously.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script>
+        let IS_SIM_MODE = true;
+        let globalLogID = 1;
+        let currentWaterLevel = 100;
+
+        // Populate Topo Grid Map with 24 custom micro-nodes instantly
+        const grid = document.getElementById('matrix-grid');
+        for (let i = 1; i <= 24; i++) {
+            grid.innerHTML += `<div class="field-node" id="node-${i}">Node ${i}<br><span class="n-val">--</span></div>`;
+        }
+        // Append Tank UI Component dynamically inside Topo Grid Map
+        grid.innerHTML += `<div class="tank-wrapper"><div class="tank-txt" id="tk-txt">100%</div><div class="tank-fill" id="tk-fill" style="height:100%"></div></div>`;
+
+        // Navigation Controller Logic
+        const tabs = [
+            { btn: 'tab-dash', view: 'section-dashboard', title: 'Autonomous Matrix Dashboard', hint: 'Real-time deep learning diagnostic twin for automated crop tracking' },
+            { btn: 'tab-logs', view: 'section-logs', title: 'Data Matrix Archive', hint: 'Historical diagnostic logs compiled and synced directly from local SQLite database' },
+            { btn: 'tab-ai', view: 'section-ai', title: 'Neural Core Meta-Weights', hint: 'Decision border controls, triggers and tuning algorithms for scikit learning layers' }
+        ];
+
+        tabs.forEach((tab, index) => {
+            document.getElementById(tab.btn).addEventListener('click', () => {
+                tabs.forEach(t => {
+                    document.getElementById(t.btn).classList.remove('active');
+                    if(t.view === 'section-dashboard') {
+                        document.getElementById('section-dashboard').style.display = 'none';
+                    } else {
+                        document.getElementById(t.view).style.display = 'none';
+                    }
+                });
+
+                document.getElementById(tab.btn).classList.add('active');
+                if(tab.view === 'section-dashboard') {
+                    document.getElementById('section-dashboard').style.display = 'contents';
+                } else {
+                    document.getElementById(tab.view).style.display = 'block';
+                }
+                document.getElementById('title-txt').innerText = tab.title;
+                document.getElementById('hint-txt').innerText = tab.hint;
+            });
+        });
+
+        // Toggle System Simulation Mode
+        function toggleSystemMode() {
+            const btn = document.getElementById('mode-btn');
+            if(IS_SIM_MODE) {
+                IS_SIM_MODE = false;
+                btn.innerText = "Real Hardware Connected";
+                btn.classList.add('real-mode');
+                resetToIdle();
+            } else {
+                IS_SIM_MODE = true;
+                btn.innerText = "Simulation Active";
+                btn.classList.remove('real-mode');
+            }
+        }
+
+        function resetToIdle() {
+            document.getElementById('m-val').innerText = "--"; document.getElementById('m-bar').style.width = "0%";
+            document.getElementById('t-val').innerText = "--"; document.getElementById('t-bar').style.width = "0%";
+            document.getElementById('h-val').innerText = "--"; document.getElementById('h-bar').style.width = "0%";
+            document.getElementById('pump-val').innerText = "AWAITING TELEMETRY";
+            document.getElementById('pump-card').classList.remove('active');
+            document.getElementById('ai-reason').innerText = "Listening on REST endpoint api pipeline...";
+        }
+
+        // Live Render Pipeline UI Engine
+        function processTelemetryData(temp, humidity, moisture, pump_status, reason) {
+            document.getElementById('m-val').innerText = moisture; document.getElementById('m-bar').style.width = `${moisture}%`;
+            document.getElementById('t-val').innerText = temp; document.getElementById('t-bar').style.width = `${(temp/50)*100}%`;
+            document.getElementById('h-val').innerText = humidity; document.getElementById('h-bar').style.width = `${humidity}%`;
+            document.getElementById('ai-reason').innerText = reason;
+
+            const pCard = document.getElementById('pump-card');
+            const pVal = document.getElementById('pump-val');
+
+            if(pump_status === 1) {
+                pVal.innerText = "PUMP RUNNING"; pVal.style.color = "var(--matrix-green)"; pCard.classList.add('active');
+                currentWaterLevel = Math.max(15, currentWaterLevel - 4);
+            } else {
+                pVal.innerText = "GATE CLOSED"; pVal.style.color = "var(--text-side)"; pCard.classList.remove('active');
+                if(humidity > 85) currentWaterLevel = Math.min(100, currentWaterLevel + 6);
+            }
+
+            document.getElementById('tk-txt').innerText = `${Math.round(currentWaterLevel)}%`;
+            document.getElementById('tk-fill').style.height = `${Math.round(currentWaterLevel)}%`;
+
+            // Sync Nodes Graphics
+            for(let i=1; i<=24; i++) {
+                let n = document.getElementById(`node-${i}`);
+                let nTxt = n.querySelector('.n-val');
+                let variance = (Math.random() * 6 - 3); // realistic grid variance
+                let computedMoisture = Math.max(10, Math.min(100, parseFloat(moisture) + variance)).toFixed(1);
+                
+                nTxt.innerText = `${computedMoisture}%`;
+                if(computedMoisture < 30) {
+                    n.className = "field-node active-dry";
+                } else {
+                    n.className = "field-node active-moist";
+                }
+            }
+
+            // Sync History Registers Data Table rows
+            const tBody = document.getElementById('table-body');
+            if(globalLogID === 1) tBody.innerHTML = ''; // wipe placeholder
+
+            const badge = pump_status === 1 ? '<span class="badge badge-on">ON</span>' : '<span class="badge badge-off">OFF</span>';
+            const row = `<tr>
+                <td><strong>#${globalLogID++}</strong></td>
+                <td>${new Date().toLocaleTimeString()}</td>
+                <td>${temp}</td>
+                <td>${humidity}</td>
+                <td>${moisture}</td>
+                <td>${badge}</td>
+                <td><small>${reason}</small></td>
+            </tr>`;
+            tBody.insertAdjacentHTML('afterbegin', row);
+            if(tBody.rows.length > 8) tBody.deleteRow(8);
+        }
+
+        // Standard Background Automation Loop Worker Thread
+        function runSimulationEngine() {
+            if(!IS_SIM_MODE) return;
+            let temp = (Math.random() * (42 - 22) + 22).toFixed(1);
+            let humidity = (Math.random() * (95 - 40) + 40).toFixed(1);
+            let moisture = (Math.random() * (90 - 12) + 12).toFixed(1);
+
+            // Simulation feedback tracker loop
+            if(document.getElementById('pump-val').innerText === "PUMP RUNNING") {
+                moisture = (Math.random() * (85 - 65) + 65).toFixed(1);
+            }
+
+            let status = 0; let msg = "SYSTEM SAFE: Target parameters within nominal boundaries.";
+            if(moisture < 30 && temp > 38) { status = 1; msg = "CRITICAL HEATWAVE: Severe heat & dry matrix detected. Secondary irrigation triggered."; }
+            else if(moisture < 30 && humidity > 85) { status = 0; msg = "STANDBY OPTIMIZED: Soil dry, but atmosphere layer indicates precipitation risk. Saving reservoir."; }
+            else if(moisture < 30) { status = 1; msg = "LOW MOISTURE ALERT: Grid node dropped below 30%. Pump relay activated."; }
+
+            processTelemetryData(temp, humidity, moisture, status, msg);
+        }
+
+        // Boot loader setup execution
+        document.addEventListener('DOMContentLoaded', () => {
+            // default view hide operations manually
+            document.getElementById('section-logs').style.display = 'none';
+            runSimulationEngine();
+            setInterval(runSimulationEngine, 4000);
+        });
+    </script>
+</body>
+</html>
