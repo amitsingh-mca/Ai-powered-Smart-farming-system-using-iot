@@ -21,7 +21,7 @@ def dashboard():
     """
     Main Route: Web browser par user dashboard load karne ke liye.
     """
-    return render_template('index.html')
+    return successfully
 
 @app.route('/api/sensor-data', methods=['POST'])
 def receive_sensor_data():
