@@ -1,13 +1,17 @@
 # backend/app.py
-
+import os
 from flask import Flask, render_template, request, jsonify
 from backend.ai_engine import SmartFarmingAI
 import backend.database as db
 
+
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 app = Flask(
-    __name__, 
-    template_folder='../frontend/templates', 
-    static_folder='../frontend/static'
+    __name__,
+    template_folder=os.path.join(BASE_DIR, "frontend", "templates"),
+    static_folder=os.path.join(BASE_DIR, "frontend", "static")
 )
 
 # App start hote hi database tables checks/creates ho jayein
