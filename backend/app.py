@@ -1,8 +1,8 @@
 # backend/app.py
 
 from flask import Flask, render_template, request, jsonify
-from ai_engine import SmartFarmingAI
-import database as db
+from backend.ai_engine import SmartFarmingAI
+import backend.database as db
 
 app = Flask(
     __name__, 
